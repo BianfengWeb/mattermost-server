@@ -6,7 +6,6 @@ package app
 import (
 	"io"
 	"io/ioutil"
-	"net/http"
 	"os"
 	"path/filepath"
 	"time"
@@ -20,7 +19,6 @@ import (
 	"github.com/mattermost/mattermost-server/store/sqlstore"
 	"github.com/mattermost/mattermost-server/store/storetest"
 	"github.com/mattermost/mattermost-server/utils"
-	"github.com/mattermost/mattermost-server/utils/testutils"
 )
 
 type TestHelper struct {
@@ -36,8 +34,6 @@ type TestHelper struct {
 
 	tempConfigPath string
 	tempWorkspace  string
-
-	MockedHTTPService *testutils.MockedHTTPService
 }
 
 type persistentTestStore struct {
@@ -166,13 +162,6 @@ func (me *TestHelper) InitBasic() *TestHelper {
 	me.LinkUserToTeam(me.BasicUser2, me.BasicTeam)
 	me.BasicChannel = me.CreateChannel(me.BasicTeam)
 	me.BasicPost = me.CreatePost(me.BasicChannel)
-
-	return me
-}
-
-func (me *TestHelper) MockHTTPService(handler http.Handler) *TestHelper {
-	me.MockedHTTPService = testutils.MakeMockedHTTPService(handler)
-	me.App.HTTPService = me.MockedHTTPService
 
 	return me
 }
